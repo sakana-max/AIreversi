@@ -28,7 +28,7 @@ pip install ollama
 python ReversiCUI.py
 ```
 
-これでAIとリバーシをプレスることができます。
+これでAIとリバーシをプレイすることができます。
 
 ## AIモデル
 
