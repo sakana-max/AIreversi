@@ -1,5 +1,5 @@
 # AIreversi
-[日本語版はこちら](README-jp.md)
+[日本語版はこちら](README_JP.md)
 
 This project allows you to play Reversi (Othello) against an LLM (Large Language Model) using Ollama.
 
