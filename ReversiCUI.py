@@ -6,7 +6,7 @@ modelNAME=setting.useAImodl()
 def sendAI(text):
   global modelNAME
   masu = sendMasu()
-  send = (setting.sendAI()+"コメント"+text+"\nマス\n"+masu+"\n選択可能なすべての座標\n"+str(OllsearchAI(1)))
+  send = (setting.sendAI()+"コメント"+text+"\nマス\n"+masu+"\n選択可能なすべての座標\n"+str(OllsearchAI(0)))
   #print(send)
   response: ChatResponse = chat(model=modelNAME, messages=[
   {
@@ -26,35 +26,35 @@ while True:
    winF1 = False
    winF = False
    while True:
-        if(Ollsearch(0) == False):
+        if(Ollsearch(1) == False):
             print("置ける場所が無いようです")
             winF = True
             break
-        pos =input("○のターン、置くマスを指定してください。例：44\n")
+        pos =input("●のターン、置くマスを指定してください。例：44\n")
         if(pos.isdigit()):
             if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 or int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
                 print("不正な形式です数値で入力してください。例　XY")
             else:
                 
-                if(Enter(t=0,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
+                if(Enter(t=1,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
                     break
                 else: print("置ける場所では無いないようです")
         else:
             print("不正な形式です数値で入力してください。例　XY")
    RePrint()
    while True:
-        if(Ollsearch(1) == False):
+        if(Ollsearch(0) == False):
             sendComentTemp+=("置ける場所が無いようです待機してください")
             print+=("AIは置ける場所がない")
             winF1 = True
             break
-        pos =sendAI("●のターン、置くマスを指定してください。"+sendComentTemp)
+        pos =sendAI("○のターン、置くマスを指定してください。"+sendComentTemp)
         if(pos.isdigit()):
             if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 and int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
                 sendComentTemp+=("不正な形式です数値で入力してください。例　XY")
             else:
                 
-                if(Enter(t=1,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
+                if(Enter(t=0,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
                     sendComentTemp = ""
                     break
                 else: sendComentTemp+=("間違えた場所を指定しています。ルール１を参照してください。")

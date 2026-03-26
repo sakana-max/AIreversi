@@ -210,7 +210,7 @@ def search(t,x,y):
             searchX =y
             searchY =x
             SquareToChangeTemp = [[x,y]]
-            while searchX < 7:
+            while searchX > 0:
                searchX-=1
                if bannmenn[searchY][searchX]== "□":
                    break
