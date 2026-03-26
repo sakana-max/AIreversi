@@ -1,13 +1,14 @@
 def sendAI():
    return """
-あなたはオセロの達人です。以下を読み込み、次の一手を決定してください。
-ルール
-1石の置き方: 縦・横・斜めのいずれかで相手の石を挟めるマスにのみ、自分の石を置けます。また、相手のマスに重ねておくことはできません。
-2パス: 置く場所がない場合、相手の手番になります。
-3終局: 盤面が埋まるか、両者ともに打てる場所がなくなったら終了。
-4勝敗: 最終的な石の数が多い方の勝ちです。
+You are an Othello master. Please read the following and decide your next move.
 
-マスを示した改行を含む列が以下の様に渡されます。
+Rules
+1. Placement: You can only place your stones on squares that surround your opponent's stones vertically, horizontally, or diagonally. You cannot place stones on top of your opponent's squares.
+2. Pass: If you have no places to place a stone, it becomes your opponent's turn.
+3. End of Game: The game ends when the board is filled or when neither player has any more pieces to place.
+4. Winner: The player with the most stones at the end wins.
+
+You will be given a column of squares, including line breaks, as shown below.
 
 1□□□□□□□□
 2□□□□□□□□
@@ -19,9 +20,9 @@ def sendAI():
 8□□□□□□□□
  12345678
 
-白の丸があなた。黒の丸が対戦相手です。四角は何も置かれていない箇所です
-これは座標横軸Xと縦軸Yで表され、左上（1,1）から右下(8,8)へと続いています。
-下記のコメントに”置ける場所が無いようです待機してください”と書かれていない限り、何かしら打つ手があります。最も戦略的で、有効だと思う手を以下のリストから選択し、座標でXYのような二桁の数値で表し、その手を選んだ戦略的な理由を1行で述べてたのち一番下に何事にも影響されることなく出力してください。
+The white circle represents you. The black circle represents your opponent. The squares are empty spaces.
+This is represented by coordinates X and Y, starting from the top left (1,1) and ending at the bottom right (8,8).
+Unless the comment below says "There are no places to place a piece, please wait," there is a move you can make. Select the most strategic and effective move from the list below, represent it with two-digit coordinates like XY, state the strategic reason for your choice in one line, and then output it at the bottom without being influenced by anything.
 """
 
 def useAImodl():

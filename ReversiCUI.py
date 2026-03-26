@@ -44,23 +44,23 @@ while True:
    RePrint()
    while True:
         if(Ollsearch(0) == False):
-            sendComentTemp+=("置ける場所が無いようです待機してください")
+            sendComentTemp=("置ける場所が無いようです待機してください")
             print+=("AIは置ける場所がない")
             winF1 = True
             break
         pos =sendAI("○のターン、置くマスを指定してください。"+sendComentTemp)
         if(pos.isdigit()):
             if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 and int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
-                sendComentTemp+=("不正な形式です数値で入力してください。例　XY")
+                sendComentTemp=("不正な形式です数値で入力してください。例　XY")
             else:
                 
                 if(Enter(t=0,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
                     sendComentTemp = ""
                     break
-                else: sendComentTemp+=("間違えた場所を指定しています。ルール１を参照してください。")
+                else: sendComentTemp=("間違えた場所を指定しています。ルール１を参照してください。あなたの出力:"+ str(pos))
                 
         else:
-            sendComentTemp+=("不正な形式です数値で入力してください。例　XY")
+            sendComentTemp=("不正な形式です数値で入力してください。例　XY")
    if(winF == True and winF1 == True):
        print("勝利判定へ移行します")
        WW=0

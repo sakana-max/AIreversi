@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox,scrolledtext
-from ollama import ChatResponse
-from ollama import chat
+import threading
 from Reversi import setup, Enter, sendMasu,sendMasuNodAdd, Ollsearch, WhihcWin, OllsearchAI
 import setting
 
@@ -40,7 +39,7 @@ class OthelloGUI:
         self.canvas.bind("<Button-1>", self.on_click)
 
     def log(self, message):
-        """ログウィンドウにメッセージを追記し、自動スクロールする"""
+        #ログウィンドウにメッセージを追記し、自動スクロールする
         self.log_area.insert(tk.END, message + "\n")
         self.log_area.see(tk.END)
 
@@ -51,7 +50,6 @@ class OthelloGUI:
             self.canvas.create_line(0, pos, 480, pos, fill="black")
 
     def refresh_display(self):
-        """Reversi.py の 8x8 配列を読み込んで描画を同期"""
         board_data = sendMasuNodAdd()
         for y in range(8):
             for x in range(8):
@@ -65,7 +63,7 @@ class OthelloGUI:
                 self._update_stone_graphic(coord_key, color, x, y)
 
     def _update_stone_graphic(self, key, color, x, y):
-        """キャンバス上の石を更新"""
+        #キャンバス上の石を更新
         if key in self.stone_ids:
             self.canvas.delete(self.stone_ids[key])
             del self.stone_ids[key]
@@ -88,49 +86,79 @@ class OthelloGUI:
                 self.after_move_process()
 
     def run_ai_turn(self):
+     #AIの思考プロセスを別スレッドで開始する（フリーズ防止)
+     self.log("--- AI's Turn ---")
      self.log("AI is thinking...")
-     def sendAI(text):
-     
-      masu = sendMasu()
-      send = (setting.sendAI()+"コメント"+text+"\nマス\n"+masu+"\n選択可能なすべての座標\n"+str(OllsearchAI(0)))
-      #print(send)
-      response: ChatResponse = chat(model=setting.useAImodl(), messages=[
-       {
-      'role': 'user',
-      'content':send,
-       },
-      ])
-      #print(response.message.content)
-      return response.message.content.strip().splitlines()[-1],response.message.content.strip()
-     sendComentTemp =""
-     
-     AIrespos  = ""
+    
+     # 思考処理をバックグラウンドで実行
+     thread = threading.Thread(target=self._ai_logic_thread)
+     thread.daemon = True # アプリ終了時に一緒に終了するように
+     thread.start()
+
+    def _ai_logic_thread(self):
+     #重いLLM通信とループ処理を行うスレッド
+     sendComentTemp = ""
+     AIrespos = ""
+
      while True:
-        if(Ollsearch(0) == False):
-            sendComentTemp+=("置ける場所が無いようです待機してください")
-            #print+=("AIは置ける場所がない")
+        # パス判定
+        if not Ollsearch(0):
+            self.root.after(0, self.log, "AI: It seems there's no place to put it.")
             break
-        pos,AIrespos =sendAI("○のターン、置くマスを指定してください。"+sendComentTemp)
-        if(pos.isdigit()):
-            if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 and int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
-                sendComentTemp+=("不正な形式です数値で入力してください。例　XY")
+
+        # LLMへの問い合わせ（ここが重い）
+        try:
+            # 内部関数 sendAI を実行（元のコードのロジックを維持）
+            pos_str, full_response = self.send_ai_request("It's ○'s turn, please specify the square where you want to place your piece." + sendComentTemp)
+            
+            # ログにAIの生の声（思考内容）を出力
+            self.root.after(0, self.log, f"AI Thought:\n{full_response}")
+
+            # 座標バリデーション
+            if pos_str.isdigit() and len(pos_str) == 2:
+                ix = int(pos_str[0]) - 1
+                iy = int(pos_str[1]) - 1
+                
+                # 重要：先ほどの修正（iy, ix）に合わせて呼び出し
+                if Enter(0, ix, iy): 
+                    self.root.after(0, self.log, f"AI placed at {pos_str}")
+                    break # 成功
+                else:
+                    sendComentTemp = " You have specified the wrong location. Please refer to Rule 1.out put"+pos_str
+                    self.root.after(0, self.log, "warning AI chose an invalid square. Retrying...")
             else:
-                
-                if(Enter(t=0,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
-                    sendComentTemp = ""
-                    break
-                else: sendComentTemp+=("間違えた場所を指定しています。ルール１を参照してください。")
-                
-        else:
-            sendComentTemp+=("不正な形式です数値で入力してください。例　XY")
+                sendComentTemp = " This is an invalid format. Please enter a number. Example: XY"
+                self.root.after(0, self.log, f"warning AI gave invalid format: {pos_str}. Retrying...")
 
+        except Exception as e:
+            self.root.after(0, self.log, f"Communication Error: {e}")
+            break
+     # 処理が終わったらメインスレッドで画面更新
+     self.root.after(0, self.after_move_process)
+    def send_ai_request(self, text):
         
-        # LLMから思考内容と着手座標を取得する想定
-        # OllsearchAIが(座標, 理由)のタプルなどを返すようにしておくと便利です
-        
-     self.log("AI chose:"+AIrespos)  
-     self.after_move_process()
-
+     from ollama import chat, ChatResponse # ライブラリに合わせて調整してください
+    
+     masu = sendMasu() # 文字列形式のマス
+     selectable = str(OllsearchAI(0)) # 置ける場所リスト
+    
+     # プロンプト作成
+     send_content = (
+        setting.sendAI() + 
+        "comment " + text + 
+        "\ntrout\n" + masu + 
+        "\nAll selectable coordinates\n" + selectable
+     )
+     #print(send_content)
+     response: ChatResponse = chat(
+        model=setting.useAImodl(), 
+        messages=[{'role': 'user', 'content': send_content}]
+     )
+    
+     content = response.message.content.strip()
+     # 最終行を座標(XY)、全体を思考ログとして返す
+     #print(content)
+     return content.splitlines()[-1], content
     def after_move_process(self):
         self.refresh_display()
         next_t = 1 - self.current_team
