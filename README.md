@@ -2,7 +2,7 @@
 
 このプロジェクトは、Ollamaを使用し、LLMとリバーシをします。
 
-[<img width="1549" height="857" alt="main" src="https://github.com/user-attachments/assets/728f6664-d45f-486f-9334-f5dc078286d0" />](https://github.com/sakana-max/AIreversi/blob/main/main.png)
+<img width="1549" height="857" alt="main" src="https://github.com/sakana-max/AIreversi/blob/main/main.png" />
 
 
 ## 実行
@@ -15,7 +15,10 @@
 
 3,Ollamaがインストールされている。
 
-ことが必要です。
+
+
+ことが必要です。(Tkinterを使用しているため、Linuxでは別途インストールが必要かもしれません。)
+
 
 もしモジュールがインストールされていない場合は以下を実行してください。
 
@@ -24,6 +27,11 @@ pip install ollama
 ```
 
 条件を満たしたら、クローンしたディレクトリで以下を実行してください。
+```
+python ReversiGUI.py
+```
+CUIを使用する場合は以下を実行してください。
+
 ```
 python ReversiCUI.py
 ```
