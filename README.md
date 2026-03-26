@@ -36,6 +36,8 @@ CUIを使用する場合は以下を実行してください。
 python ReversiCUI.py
 ```
 
+AIの返答を日本語にする際は、setting-jp.pyの名前をsetting.pyに変更し、上書き保存してください。
+
 これでAIとリバーシをプレイすることができます。
 
 ## AIモデル
