@@ -124,7 +124,7 @@ class OthelloGUI:
                     self.root.after(0, self.log, f"AI placed at {pos_str}")
                     break # 成功
                 else:
-                    sendComentTemp = " You have specified the wrong location. Please refer to Rule 1.out put"+pos_str
+                    sendComentTemp = " You have specified the wrong location. Please refer to Rule 1."
                     self.root.after(0, self.log, "warning AI chose an invalid square. Retrying...")
             else:
                 sendComentTemp = " This is an invalid format. Please enter a number. Example: XY"
