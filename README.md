@@ -1,51 +1,48 @@
 # AIreversi
+[日本語版はこちら](README-jp.md)
 
-このプロジェクトは、Ollamaを使用し、LLMとリバーシをします。
+This project allows you to play Reversi (Othello) against an LLM (Large Language Model) using Ollama.
 
+(This was machine translated. The expression may not be appropriate.)
 <img width="1549" height="857" alt="main" src="https://github.com/sakana-max/AIreversi/blob/main/main.png" />
 
+## Execution
+### Prerequisites to clone and run this repository:
+(1)Python must be installed.
 
-## 実行
+(2)The ollama Python module must be installed.
 
-### リポジトリをクローンし、実行するには、
+(3)Ollama must be installed on your system.
 
-1,pythonがインストールされている。
+(Note: Since this project uses Tkinter, Linux users may need to install it separately via their package manager.)
 
-2,pythonにollamaモジュールがインストールされている。
-
-3,Ollamaがインストールされている。
-
-
-
-ことが必要です。(Tkinterを使用しているため、Linuxでは別途インストールが必要かもしれません。)
-
-
-もしモジュールがインストールされていない場合は以下を実行してください。
+If the required Python module is not installed, please run:
 
 ```
 pip install ollama
-```
+````
+Once the requirements are met, navigate to the cloned directory and run the following:
 
-条件を満たしたら、クローンしたディレクトリで以下を実行してください。
+For GUI mode:
+
 ```
 python ReversiGUI.py
 ```
-CUIを使用する場合は以下を実行してください。
+For CUI (Terminal) mode:
 
 ```
 python ReversiCUI.py
 ```
+Language Settings:
+To change the AI's responses to Japanese, rename setting-jp.py to setting.py (overwriting the existing file).
 
-AIの返答を日本語にする際は、setting-jp.pyの名前をsetting.pyに変更し、上書き保存してください。
+You are now ready to play Reversi against the AI!
 
-これでAIとリバーシをプレイすることができます。
+## AI Model
+The default model used is gemma3:12b.
 
-## AIモデル
+You can change the model by modifying the value in the useAImodl() function within setting.py.
 
-初期値では gemma3:12b　を使用します
+Note: Models with "Reasoning/Think" capabilities are not recommended, as they may result in infinite thinking loops.
 
-‎setting.py‎の useAImodl() の値を変更することでモデルを変更できます。
-
-Think機能があるモデルは推奨しません。永遠と考えを続けてしまいます。
-
-また　‎setting.py‎のsendAI()の文字を変更することでAIのプロンプトを変更することができます。
+You can also customize the AI's prompt by modifying the text in the sendAI() function within setting.py.
