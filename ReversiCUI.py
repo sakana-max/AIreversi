@@ -2,11 +2,19 @@ from Reversi import OllsearchAI,setup,sendMasu,RePrint,search,Enter,Ollsearch,Wh
 from ollama import ChatResponse
 from ollama import chat
 import setting
+#モジュールをインポート
+#Import module
+
+#設定から使用するモデルを受け取る
+#Receive the model to use from the settings
 modelNAME=setting.useAImodl()
+
 def sendAI(text):
+  #AIにプロンプトを送り、座標を返す
+  #Send a prompt to the AI ​​and return the coordinates.
   global modelNAME
   masu = sendMasu()
-  send = (setting.sendAI()+"コメント"+text+"\nマス\n"+masu+"\n選択可能なすべての座標\n"+str(OllsearchAI(0)))
+  send = (setting.sendAI()+"comment"+text+"\ntrout\n"+masu+"\nAll selectable coordinates\n"+str(OllsearchAI(0)))
   #print(send)
   response: ChatResponse = chat(model=modelNAME, messages=[
   {
@@ -16,65 +24,75 @@ def sendAI(text):
   ])
   print(response.message.content)
   return response.message.content.strip().splitlines()[-1]
+
+#初期設定
+#Initial settings
 print("strat")
 setup()
 winF = False
 winF1 = False
 sendComentTemp = ""
+
 while True:
    RePrint()
    winF1 = False
    winF = False
    while True:
+       #黒の番 
+       #black turn 
         if(Ollsearch(1) == False):
-            print("置ける場所が無いようです")
+            print("It seems there's no place to put it.")
             winF = True
             break
-        pos =input("●のターン、置くマスを指定してください。例：44\n")
+        pos =input("● During your turn, please specify the square where you will place the item. Example: 44\n")
         if(pos.isdigit()):
             if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 or int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
-                print("不正な形式です数値で入力してください。例　XY")
+                print("This is an invalid format. Please enter a number. Example: 44")
             else:
                 
                 if(Enter(t=1,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
                     break
-                else: print("置ける場所では無いないようです")
+                else: print("It seems there's no place to put it.")
         else:
-            print("不正な形式です数値で入力してください。例　XY")
+            print("This is an invalid format. Please enter a number. Example: 44")
    RePrint()
+   #白の番
+   #White's turn
    while True:
         if(Ollsearch(0) == False):
-            sendComentTemp=("置ける場所が無いようです待機してください")
-            print+=("AIは置ける場所がない")
+            sendComentTemp=(" It seems there's no place to put it. Please wait.")
+            print+=("AI: It seems there's no place to put it.")
             winF1 = True
             break
-        pos =sendAI("○のターン、置くマスを指定してください。"+sendComentTemp)
+        pos =sendAI("It's ○'s turn, please specify the square where you want to place your piece."+sendComentTemp)
         if(pos.isdigit()):
             if(len(str(pos))== 1 or len(str(pos))> 2 or int(str(pos[0]))>8 and int(str(pos[1]))>8 or int(str(pos[0])) ==0 and int(str(pos[1])) ==0):
-                sendComentTemp=("不正な形式です数値で入力してください。例　XY")
+                sendComentTemp=(" This is an invalid format. Please enter a number. Example: XY")
             else:
                 
                 if(Enter(t=0,x=int(str(pos[0]))-1,y=int(str(pos[1]))-1)):
                     sendComentTemp = ""
                     break
-                else: sendComentTemp=("間違えた場所を指定しています。ルール１を参照してください。あなたの出力:"+ str(pos))
+                else: sendComentTemp=(" You have specified the wrong location. Please refer to Rule 1.")
                 
         else:
-            sendComentTemp=("不正な形式です数値で入力してください。例　XY")
+            sendComentTemp=(" This is an invalid format. Please enter a number. Example: XY")
+   #両者置ける場所がない場合に勝利判定
+   #Victory is determined when neither player has a place to put their piece.         
    if(winF == True and winF1 == True):
-       print("勝利判定へ移行します")
+       print("We will now proceed to the victory determination.")
        WW=0
        AC=0
        BC=0
        WW,AC,BC  = WhihcWin()
        WS = ""
        if(WW==0):
-           WS = "○の勝ち"
+           WS = "○ wins"
        elif(WW==1):
-           WS = "●の勝ち"
+           WS = "● wins"
        else:
-           WS="引き分け"
+           WS="draw"
            
-       print("○が"+str(AC)+":●が"+str(BC)+"で"+WS)
+       print("○:"+str(AC)+":●:"+str(BC)+" "+WS)
        break
-input("Enterキーを押すと終了します...")
+input("Pressing Enter will exit...")
