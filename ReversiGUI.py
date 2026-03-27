@@ -36,6 +36,7 @@ class OthelloGUI:
         self.draw_grid()
         self.refresh_display()
         self.log("Game Started. Your turn (Black).")
+        self.log("--- Your Turn ---")
         
         self.canvas.bind("<Button-1>", self.on_click)
 
@@ -150,6 +151,7 @@ class OthelloGUI:
      # 処理が終わったらメインスレッドで画面更新
      # Once processing is complete, refresh the screen on the main thread.   
      self.root.after(0, self.after_move_process)
+     self.log("--- Your Turn ---")
     def send_ai_request(self, text):
         
      from ollama import chat, ChatResponse # ollamaのライブラリをインポート Import the ollama library
