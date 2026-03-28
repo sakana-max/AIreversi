@@ -37,7 +37,6 @@ class OthelloGUI:
         self.refresh_display()
         self.log("Game Started. Your turn (Black).")
         self.log("--- Your Turn ---")
-        
         self.canvas.bind("<Button-1>", self.on_click)
 
     def log(self, message):
@@ -151,7 +150,6 @@ class OthelloGUI:
      # 処理が終わったらメインスレッドで画面更新
      # Once processing is complete, refresh the screen on the main thread.   
      self.root.after(0, self.after_move_process)
-     self.log("--- Your Turn ---")
     def send_ai_request(self, text):
         
      from ollama import chat, ChatResponse # ollamaのライブラリをインポート Import the ollama library
@@ -187,13 +185,17 @@ class OthelloGUI:
         #Advance turn
         self.refresh_display()
         next_t = 1 - self.current_team
-        
+        if next_t == 1 and Ollsearch(next_t):
+            self.log("--- Your Turn ---")
         if Ollsearch(next_t):
             self.current_team = next_t
             if self.current_team == self.ai_team:
                 self.root.after(500, self.run_ai_turn)
         elif Ollsearch(self.current_team):
-            self.log(f"Team {next_t} passed.")
+            if next_t == 0:
+                self.log(f"Team White passed.")
+            if next_t == 1:
+                self.log(f"Team Black passed.")
             if self.current_team == self.ai_team:
                 self.root.after(500, self.run_ai_turn)
         else:
