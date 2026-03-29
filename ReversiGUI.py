@@ -31,6 +31,8 @@ class OthelloGUI:
         self.player_team = 1
         self.ai_team = 0
         self.current_team = 1
+        self.AImessages = []
+        self.playerPlaseLog = ""
 
         setup()
         self.draw_grid()
@@ -88,6 +90,7 @@ class OthelloGUI:
         if 0 <= ix < 8 and 0 <= iy < 8:
             if  Enter(self.player_team, iy, ix) == True:
                 self.log(f"You placed at: ({iy+1}, {ix+1})")
+                self.playerPlaseLog = "Player placed at" +str(iy+1)+str(ix+1)
                 self.after_move_process()
 
     def run_ai_turn(self):
@@ -163,16 +166,19 @@ class OthelloGUI:
         setting.sendAI() + 
         "comment " + text + 
         "\ntrout\n" + masu + 
-        "\nAll selectable coordinates\n" + selectable
+        "\nAll selectable coordinates\n" + selectable +
+        "\n" + self.playerPlaseLog
      )
      
      #print(send_content)
      
+     self.AImessages.append({'role': 'user', 'content': send_content})
+
      response: ChatResponse = chat(
         model=setting.useAImodl(), 
-        messages=[{'role': 'user', 'content': send_content}]
+        messages=self.AImessages
      )
-    
+     self.AImessages.append({'role': 'assistant', 'content': response.message.content})
      content = response.message.content.strip()
      # 最終行を座標(XY)、全体を思考ログとして返す
      # Return the last line as coordinates (XY), and the entire thing as a thought log.
